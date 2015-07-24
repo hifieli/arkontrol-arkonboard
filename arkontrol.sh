@@ -20,8 +20,6 @@
 #
 ###############################################################################
 
-WEBADMIN="admin"
-WEBPASS="admin"
 
 PROJNAME="ARKonBoard"
 PROJVER="0.1.0design"
@@ -55,6 +53,24 @@ PROJAUTH="hifieli <hifieli2@gmail.com>"
 #	munin?
 ###############################################################################
 
+
+# Maybe we should get this from the user interactively, or at least allow it to
+# be specified on the command line.
+WEBADMIN="admin"
+WEBPASS="admin"
+
+
+###############################################################################
+# Root Check (Don't be root, please. If you are, well, get hacked.)
+###############################################################################
+###############################################################################
+cd ~
+MYHOME=`pwd`
+
+if [ MYHOME == "/root" ]
+	then
+		ln -s /root /home/root
+fi
 
 ###############################################################################
 # Prep System
@@ -246,6 +262,10 @@ sudo iptables -I INPUT -p tcp --dport 7778 -j ACCEPT
 
 ###############################################################################
 # Start the ARK server!!
+/home/steam/ark_ds/ShooterGame/Binaries/Linux/ShooterGameServer TheIsland?listen -server -log &
+sleep 3
+killall -9 ShooterGameServer
+sleep 5
 sudo mv ~/Steam /home/steam/Steam
 sudo chown -R steam:steam /home/steam/Steam
 sudo service ark-dedicated restart
@@ -257,6 +277,6 @@ echo "\n\n\tInstallation of ${PROJNAME} has completed. To manage your server, "
 echo "\tpoint your browser to the server's IP address:\n"
 MYIP=`curl cidr.pw/ip`
 echo "\t\t http://${MYIP}"
-echo "\n\tThe default username / password is set to admin / admin"
+echo "\n\tThe username / password is set to ${WEBADMIN} / ${WEBPASS}"
 echo "\tPlease change the password first thing after you login.\n"
 #------------------------------------------------------------------------------
