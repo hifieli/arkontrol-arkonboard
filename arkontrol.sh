@@ -126,33 +126,6 @@ sudo mv /tmp/pam.d-common-session.tmp.ARKonBoard /etc/pam.d/common-session
 #------------------------------------------------------------------------------
 
 
-
-###############################################################################
-# Install ARK server 
-#   This section adopted from the official tutorial
-#   https://developer.valvesoftware.com/wiki/SteamCMD#Linux
-###############################################################################
-###############################################################################
-mkdir ~/steamcmd
-wget https://steamcdn-a.akamaihd.net/client/installer/steamcmd_linux.tar.gz -O ~/steamcmd/steamcmd_linux.tar.gz
-cd ~/steamcmd
-tar -xvzf ~/steamcmd/steamcmd_linux.tar.gz
-sudo mv ~/steamcmd /home/steam/steamcmd
-sudo chown -R steam:steam /home/steam/steamcmd
-
-# It's about to get really dirty.
-MYEXITCODE=1
-while [ $MYEXITCODE -ne 0 ]; do
-	sudo -u steam /home/steam/steamcmd/steamcmd.sh +login anonymous +force_install_dir ../ark_ds +app_update 376030 +quit
-	MYEXITCODE=$?
-done
-
-
-# It doesn't always complete successfully, and we should find some way to determine that (check exit code?) or just try to run an update immediately after installation:
-#sudo -u steam /home/steam/steamcmd/steamcmd.sh +login anonymous +force_install_dir ../ark_ds +app_update 376030 +quit
-#------------------------------------------------------------------------------
-
-
 ###############################################################################
 # Install Web Panel
 ###############################################################################
@@ -199,6 +172,32 @@ sudo chmod 777 /etc/arkontrol.ini
 sudo chown -R www-data:www-data /var/www
 sudo curl --silent 127.0.0.1 > /dev/null
 #------------------------------------------------------------------------------
+
+
+
+###############################################################################
+# Install ARK server 
+#   This section adopted from the official tutorial
+#   https://developer.valvesoftware.com/wiki/SteamCMD#Linux
+###############################################################################
+###############################################################################
+mkdir ~/steamcmd
+wget https://steamcdn-a.akamaihd.net/client/installer/steamcmd_linux.tar.gz -O ~/steamcmd/steamcmd_linux.tar.gz
+cd ~/steamcmd
+tar -xvzf ~/steamcmd/steamcmd_linux.tar.gz
+sudo mv ~/steamcmd /home/steam/steamcmd
+sudo chown -R steam:steam /home/steam/steamcmd
+
+# It's about to get really dirty.
+MYEXITCODE=1
+while [ $MYEXITCODE -ne 0 ]; do
+	sudo -u steam /home/steam/steamcmd/steamcmd.sh +login anonymous +force_install_dir ../ark_ds +app_update 376030 +quit
+	MYEXITCODE=$?
+	# It doesn't always complete successfully, 
+done
+
+#------------------------------------------------------------------------------
+
 
 
 
@@ -273,6 +272,9 @@ sleep 3
 killall -9 ShooterGameServer
 sleep 5
 sudo mv ~/Steam /home/steam/Steam
+if [ ! -d /home/steam/Steam/logs ]; then
+	mkdir /home/steam/Steam/logs
+fi
 sudo chown -R steam:steam /home/steam/Steam
 sudo service ark-dedicated restart
 sudo chmod 666 /home/steam/ark_ds/ShooterGame/Saved/Config/LinuxServer/*
