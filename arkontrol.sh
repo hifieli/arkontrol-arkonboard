@@ -67,10 +67,10 @@ WEBPASS="admin"
 cd ~
 MYHOME=`pwd`
 
-if [ MYHOME == "/root" ]
-	then
-		ln -s /root /home/root
+if [ MYHOME == "/root" ]; then
+        ln -s /root /home/root
 fi
+
 
 ###############################################################################
 # Prep System
@@ -140,7 +140,13 @@ tar -xvzf ~/steamcmd/steamcmd_linux.tar.gz
 sudo mv ~/steamcmd /home/steam/steamcmd
 sudo chown -R steam:steam /home/steam/steamcmd
 
-sudo -u steam /home/steam/steamcmd/steamcmd.sh +login anonymous +force_install_dir ../ark_ds +app_update 376030 +quit
+# It's about to get really dirty.
+MYEXITCODE=1
+while [ $MYEXITCODE -ne 0 ]; do
+	sudo -u steam /home/steam/steamcmd/steamcmd.sh +login anonymous +force_install_dir ../ark_ds +app_update 376030 +quit
+	MYEXITCODE=$?
+done
+
 
 # It doesn't always complete successfully, and we should find some way to determine that (check exit code?) or just try to run an update immediately after installation:
 #sudo -u steam /home/steam/steamcmd/steamcmd.sh +login anonymous +force_install_dir ../ark_ds +app_update 376030 +quit
