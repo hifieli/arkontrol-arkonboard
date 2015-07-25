@@ -42,16 +42,7 @@ PROJAUTH="hifieli <hifieli2@gmail.com>"
 #
 ###############################################################################
 
-###############################################################################
-# Planned improvements:
-###############################################################################
-#	FTP server
-#	SSH port change / SSH Keys
-#	better iptables hardening - CSF+LFD maybe. 
-#	test with systemd script on Ubuntu 15.04
-#	test with systemd script on CentOS/RHEL/fedora (versions that use systemd)
-#	auth info as optional arguments ( -u admin -p password )
-###############################################################################
+
 
 
 # Maybe we should get this from the user interactively, or at least allow it to
@@ -60,16 +51,7 @@ WEBADMIN="admin"
 WEBPASS="admin"
 
 
-###############################################################################
-# Root Check (Don't be root, please. If you are, well, get hacked.)
-###############################################################################
-###############################################################################
-# cd ~
-# MYHOME=`pwd`
-
-# if [ MYHOME == "/root" ]; then
-        # ln -s /root /home/root
-# fi
+WEBPASSHASH=`echo "$WEBPASS" | md5sum | cut -d" " -f1`
 
 
 ###############################################################################
@@ -156,20 +138,26 @@ sudo cp /etc/sudoers /etc/sudoers.bak
 sudo mv /tmp/etc-sudoers.tmp.ARKonBoard /etc/sudoers
 #------------------------------------------------------------------------------
 
-
-
-
 #------------------------------------------------------------------------------
 # Obtain PHP sources
-#   In the future, move this to github
 #------------------------------------------------------------------------------
 cd /var/www
+#   TODO: move this to fetch from github.com
 sudo wget http://cdn.arkontrol.com/arkontrol-php.tar
 sudo tar -xvzf arkontrol-php.tar --overwrite
 sudo rm -f arkontrol-php.tar
+#	TODO: Maybe we can get away with something like 750 instead of 777
 sudo chmod 777 /var/www/includes/smarty/templates_c/
+
+# Modify the arkontrol.ini to include our admin info.
+touch /tmp/etc-arkontrol.ini.tmp.ARKonBoard
+sudo cat /etc/arkontrol.ini | sed 's/^webadminname.*/webadminname="${WEBADMIN}"/' | sed 's/^webadminpass.*/webadminpass="${WEBPASSHASH}"/' > /tmp/etc-arkontrol.ini.tmp.ARKonBoard
+sudo cp /etc/arkontrol.ini /etc/arkontrol.ini.bak
+sudo mv /tmp/etc-arkontrol.ini.tmp.ARKonBoard /etc/arkontrol.ini
 sudo mv /var/www/arkontrol.ini /etc/arkontrol.ini
+#	TODO: c'mon, man. chown that and go 660
 sudo chmod 777 /etc/arkontrol.ini
+
 sudo chown -R www-data:www-data /var/www
 sudo curl --silent 127.0.0.1 > /dev/null
 #------------------------------------------------------------------------------
@@ -289,3 +277,17 @@ echo "\t\t http://${MYIP}"
 echo "\n\tThe username / password is set to ${WEBADMIN} / ${WEBPASS}"
 echo "\tPlease change the password first thing after you login.\n"
 #------------------------------------------------------------------------------
+
+
+
+
+###############################################################################
+# Planned improvements:
+###############################################################################
+#	FTP server
+#	SSH port change / SSH Keys
+#	better iptables hardening - CSF+LFD maybe. 
+#	test with systemd script on Ubuntu 15.04
+#	test with systemd script on CentOS/RHEL/fedora (versions that use systemd)
+#	auth info as optional arguments ( -u admin -p password )
+###############################################################################
