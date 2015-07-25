@@ -32,10 +32,10 @@ PROJAUTH="hifieli <hifieli2@gmail.com>"
 #	prep system
 #		create user
 #		modify file limits, etc
-#	install ARK server
 #	install web panel
 #		install lighttpd+PHP
 #		place PHP sources
+#	install ARK server
 #	configs
 #		upstart file for ARK server
 #		iptables - SSH ports, ftp ports, httpd ports, and ark ports
@@ -46,11 +46,11 @@ PROJAUTH="hifieli <hifieli2@gmail.com>"
 # Planned improvements:
 ###############################################################################
 #	FTP server
-#	SSH port change
-#	iptables hardening
-#	test with systemd script on 15.04
-#	check into CentOS compat
-#	munin?
+#	SSH port change / SSH Keys
+#	better iptables hardening - CSF+LFD maybe. 
+#	test with systemd script on Ubuntu 15.04
+#	test with systemd script on CentOS/RHEL/fedora (versions that use systemd)
+#	auth info as optional arguments ( -u admin -p password )
 ###############################################################################
 
 
@@ -64,12 +64,12 @@ WEBPASS="admin"
 # Root Check (Don't be root, please. If you are, well, get hacked.)
 ###############################################################################
 ###############################################################################
-cd ~
-MYHOME=`pwd`
+# cd ~
+# MYHOME=`pwd`
 
-if [ MYHOME == "/root" ]; then
-        ln -s /root /home/root
-fi
+# if [ MYHOME == "/root" ]; then
+        # ln -s /root /home/root
+# fi
 
 
 ###############################################################################
@@ -146,8 +146,9 @@ sudo service lighttpd force-reload
 #------------------------------------------------------------------------------
 
 #------------------------------------------------------------------------------
-# Allow webserver to manipulate services (yeah, this is NOT ideal)
+# Allow webserver to manipulate services 
 #------------------------------------------------------------------------------
+#TODO: find a configuration that is more restrictive than ALL. `man sudo`
 touch /tmp/etc-sudoers.tmp.ARKonBoard
 sudo cat /etc/sudoers | grep -v "www-data ALL=(ALL) NOPASSWD: ALL" > /tmp/etc-sudoers.tmp.ARKonBoard
 sudo echo "www-data ALL=(ALL) NOPASSWD: ALL" >> /tmp/etc-sudoers.tmp.ARKonBoard
