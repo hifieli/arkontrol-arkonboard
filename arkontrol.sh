@@ -257,7 +257,7 @@ sudo iptables -I INPUT -p tcp --dport 7778 -j ACCEPT
 ###############################################################################
 # Start the ARK server!!
 /home/steam/ark_ds/ShooterGame/Binaries/Linux/ShooterGameServer TheIsland?listen -server -log &
-sleep 3
+sleep 15
 killall -9 ShooterGameServer
 sleep 5
 sudo mv ~/Steam /home/steam/Steam
