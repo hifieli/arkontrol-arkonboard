@@ -68,11 +68,11 @@ sudo apt-get install lib32gcc1 -y
 #------------------------------------------------------------------------------
 # Create a user for our server
 #------------------------------------------------------------------------------
-touch /tmp/shells.tmp.ARKonBoard
-sudo cat /etc/shells | grep -v "/usr/sbin/nologin" > /tmp/shells.tmp.ARKonBoard
-sudo echo "/usr/sbin/nologin" >> /tmp/shells.tmp.ARKonBoard
+touch /tmp/shells.ARKonBoard
+sudo cat /etc/shells | grep -v "/usr/sbin/nologin" > /tmp/shells.ARKonBoard
+sudo echo "/usr/sbin/nologin" >> /tmp/shells.ARKonBoard
 sudo mv /etc/shells /etc/shells.bak
-sudo mv /tmp/shells.tmp.ARKonBoard /etc/shells
+sudo mv /tmp/shells.ARKonBoard /etc/shells
 sudo useradd -m steam -s /usr/sbin/nologin
 #------------------------------------------------------------------------------
 
@@ -81,30 +81,30 @@ sudo useradd -m steam -s /usr/sbin/nologin
 #    http://ark.gamepedia.com/Dedicated_Server_Setup
 #------------------------------------------------------------------------------
 #  1. Modify /etc/sysctl.conf:
-touch /tmp/sysctl.conf.tmp.ARKonBoard
-sudo cat /etc/sysctl.conf | grep -v "fs.file-max=100000" > /tmp/sysctl.conf.tmp.ARKonBoard
-sudo echo "fs.file-max=100000" >> /tmp/sysctl.conf.tmp.ARKonBoard
+touch /tmp/sysctl.conf.ARKonBoard
+sudo cat /etc/sysctl.conf | grep -v "fs.file-max=100000" > /tmp/sysctl.conf.ARKonBoard
+sudo echo "fs.file-max=100000" >> /tmp/sysctl.conf.ARKonBoard
 sudo mv /etc/sysctl.conf /etc/sysctl.conf.bak
-sudo mv /tmp/sysctl.conf.tmp.ARKonBoard /etc/sysctl.conf
+sudo mv /tmp/sysctl.conf.ARKonBoard /etc/sysctl.conf
 
 #  2. Apply the change:
 sudo sysctl -p /etc/sysctl.conf
 
 #  3. Modify /etc/security/limits.conf:
-touch /tmp/security-limits.conf.tmp.ARKonBoard
-sudo cat /etc/security/limits.conf | grep -v "`cat /etc/security/limits.conf | tail -n1`" | grep -v "*               soft    nofile          1000000" | grep -v "*               hard    nofile          1000000" > /tmp/security-limits.conf.tmp.ARKonBoard
-sudo echo "*               soft    nofile          1000000" >> /tmp/security-limits.conf.tmp.ARKonBoard
-sudo echo "*               hard    nofile          1000000" >> /tmp/security-limits.conf.tmp.ARKonBoard
-sudo echo "# End of file" >> /tmp/security-limits.conf.tmp.ARKonBoard
+touch /tmp/security-limits.conf.ARKonBoard
+sudo cat /etc/security/limits.conf | grep -v "`cat /etc/security/limits.conf | tail -n1`" | grep -v "*               soft    nofile          1000000" | grep -v "*               hard    nofile          1000000" > /tmp/security-limits.conf.ARKonBoard
+sudo echo "*               soft    nofile          1000000" >> /tmp/security-limits.conf.ARKonBoard
+sudo echo "*               hard    nofile          1000000" >> /tmp/security-limits.conf.ARKonBoard
+sudo echo "# End of file" >> /tmp/security-limits.conf.ARKonBoard
 sudo mv /etc/security/limits.conf /etc/security/limits.conf.bak
-sudo mv /tmp/security-limits.conf.tmp.ARKonBoard /etc/security/limits.conf
+sudo mv /tmp/security-limits.conf.ARKonBoard /etc/security/limits.conf
 
 #  4. Modify /etc/pam.d/common-session:
-touch /tmp/pam.d-common-session.tmp.ARKonBoard
-sudo cat /etc/pam.d/common-session | grep -v "session required pam_limits.so" > /tmp/pam.d-common-session.tmp.ARKonBoard
-sudo echo "session required pam_limits.so" >> /tmp/pam.d-common-session.tmp.ARKonBoard
+touch /tmp/pam.d-common-session.ARKonBoard
+sudo cat /etc/pam.d/common-session | grep -v "session required pam_limits.so" > /tmp/pam.d-common-session.ARKonBoard
+sudo echo "session required pam_limits.so" >> /tmp/pam.d-common-session.ARKonBoard
 sudo cp /etc/pam.d/common-session /etc/pam.d/common-session.bak
-sudo mv /tmp/pam.d-common-session.tmp.ARKonBoard /etc/pam.d/common-session
+sudo mv /tmp/pam.d-common-session.ARKonBoard /etc/pam.d/common-session
 #------------------------------------------------------------------------------
 
 
@@ -131,11 +131,11 @@ sudo service lighttpd force-reload
 # Allow webserver to manipulate services 
 #------------------------------------------------------------------------------
 #TODO: find a configuration that is more restrictive than ALL. `man sudo`
-touch /tmp/etc-sudoers.tmp.ARKonBoard
-sudo cat /etc/sudoers | grep -v "www-data ALL=(ALL) NOPASSWD: ALL" > /tmp/etc-sudoers.tmp.ARKonBoard
-sudo echo "www-data ALL=(ALL) NOPASSWD: ALL" >> /tmp/etc-sudoers.tmp.ARKonBoard
+touch /tmp/etc-sudoers.ARKonBoard
+sudo cat /etc/sudoers | grep -v "www-data ALL=(ALL) NOPASSWD: ALL" > /tmp/etc-sudoers.ARKonBoard
+sudo echo "www-data ALL=(ALL) NOPASSWD: ALL" >> /tmp/etc-sudoers.ARKonBoard
 sudo cp /etc/sudoers /etc/sudoers.bak
-sudo mv /tmp/etc-sudoers.tmp.ARKonBoard /etc/sudoers
+sudo mv /tmp/etc-sudoers.ARKonBoard /etc/sudoers
 #------------------------------------------------------------------------------
 
 #------------------------------------------------------------------------------
@@ -150,10 +150,10 @@ sudo rm -f arkontrol-php.tar
 sudo chmod 777 /var/www/includes/smarty/templates_c/
 
 # Modify the arkontrol.ini to include our admin info.
-touch /tmp/etc-arkontrol.ini.tmp.ARKonBoard
-sudo cat /etc/arkontrol.ini | sed 's/^webadminname.*/webadminname="${WEBADMIN}"/' | sed 's/^webadminpass.*/webadminpass="${WEBPASSHASH}"/' > /tmp/etc-arkontrol.ini.tmp.ARKonBoard
+touch /tmp/etc-arkontrol.ini.ARKonBoard
+sudo cat /etc/arkontrol.ini | sed 's/^webadminname.*/webadminname="${WEBADMIN}"/' | sed 's/^webadminpass.*/webadminpass="${WEBPASSHASH}"/' > /tmp/etc-arkontrol.ini.ARKonBoard
 sudo cp /etc/arkontrol.ini /etc/arkontrol.ini.bak
-sudo mv /tmp/etc-arkontrol.ini.tmp.ARKonBoard /etc/arkontrol.ini
+sudo mv /tmp/etc-arkontrol.ini.ARKonBoard /etc/arkontrol.ini
 sudo mv /var/www/arkontrol.ini /etc/arkontrol.ini
 #	TODO: c'mon, man. chown that and go 660
 sudo chmod 777 /etc/arkontrol.ini
