@@ -265,7 +265,7 @@ sudo mv ~/Steam /home/steam/Steam
 if [ ! -d /home/steam/Steam/logs ]; then
 	mkdir /home/steam/Steam/logs
 fi
-sudo chown -R steam:steam /home/steam/Steam
+sudo chown -R steam:steam /home/steam
 sudo service ark-dedicated restart
 sudo chmod 666 /home/steam/ark_ds/ShooterGame/Saved/Config/LinuxServer/*
 ###############################################################################
