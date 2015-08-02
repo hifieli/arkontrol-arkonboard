@@ -219,6 +219,7 @@ sudo echo "    exec /home/steam/ark_ds/ShooterGame/Binaries/Linux/ShooterGameSer
 sudo echo "end script" >> /tmp/ark-dedicated.conf
 sudo echo "" >> /tmp/ark-dedicated.conf
 sudo echo "pre-start script" >> /tmp/ark-dedicated.conf
+sudo echo "    chown -R steam:steam /homw/steam" >> /tmp/ark-dedicated.conf
 sudo echo "    echo \"[\`date\`] ARK Dedicated Server Starting\" >> /home/steam/Steam/logs/ark_ds.log" >> /tmp/ark-dedicated.conf
 sudo echo "end script" >> /tmp/ark-dedicated.conf
 sudo echo "" >> /tmp/ark-dedicated.conf
