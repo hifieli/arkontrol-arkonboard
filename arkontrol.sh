@@ -234,8 +234,12 @@ sudo mv /tmp/ark-dedicated.conf /etc/init/ark-dedicated.conf
 # Open Firewall Ports
 #------------------------------------------------------------------------------
 # SSH port
-sudo iptables -I INPUT -p tcp --dport 9022 -j ACCEPT
 sudo iptables -I INPUT -p tcp --dport 22 -j ACCEPT
+
+# FTP ports
+sudo iptables -I INPUT -p tcp --dport 20 -j ACCEPT
+sudo iptables -I INPUT -p tcp --dport 21 -j ACCEPT
+sudo iptables -I INPUT -p tcp --dport 30000:50000 -j ACCEPT
 
 # web port(s)
 sudo iptables -I INPUT -p tcp --dport 80 -j ACCEPT
@@ -249,10 +253,21 @@ sudo iptables -I INPUT -p tcp --dport 27016 -j ACCEPT
 sudo iptables -I INPUT -p udp --dport 7778 -j ACCEPT
 sudo iptables -I INPUT -p tcp --dport 7778 -j ACCEPT
 
-#------------------------------------------------------------------------------
-# TODO: do something to make sure all the ports are still open after a reboot
-#------------------------------------------------------------------------------
+# ARK rCon port
+sudo iptables -I INPUT -p udp --dport 32330 -j ACCEPT
+sudo iptables -I INPUT -p tcp --dport 32330 -j ACCEPT
 
+# We don't send email. ever.
+sudo iptables -A OUTPUT -p tcp --dport 25 -j DROP
+sudo iptables -A OUTPUT -p tcp --dport 26 -j DROP
+sudo iptables -A OUTPUT -p tcp --dport 143 -j DROP
+sudo iptables -A OUTPUT -p tcp --dport 465 -j DROP
+sudo iptables -A OUTPUT -p tcp --dport 587 -j DROP
+sudo iptables -A OUTPUT -p tcp --dport 993 -j DROP
+#------------------------------------------------------------------------------
+# make sure all the ports are still open after a reboot
+#------------------------------------------------------------------------------
+sudo service iptables restart
 
 
 ###############################################################################
