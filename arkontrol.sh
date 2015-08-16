@@ -35,6 +35,7 @@ PROJAUTH="hifieli <hifieli2@gmail.com>"
 #	install web panel
 #		install lighttpd+PHP
 #		place PHP sources
+#	install ftp(s) server
 #	install ARK server
 #	configs
 #		upstart file for ARK server
@@ -128,6 +129,26 @@ sudo service lighttpd force-reload
 #------------------------------------------------------------------------------
 
 #------------------------------------------------------------------------------
+# Configure lighttpd to use SSL on port 443.
+#------------------------------------------------------------------------------
+if [ -z "$(cat /etc/lighttpd/lighttpd.conf | grep ':443')" ]; then
+	# Create Self-Signed SSL Certificate for web server
+	sudo mkdir /etc/lighttpd/certs -p
+	sudo openssl req -new -x509 -keyout /etc/lighttpd/certs/lighttpd.pem -out /etc/lighttpd/certs/lighttpd.pem -days 10000 -nodes -subj "/C=US/ST=HTTP Server/L=arkontrol/O=arkontrol-web/OU=arkontrol-php/CN=ssl.arkontrol.com"
+	sudo chown www-data:www-data /etc/lighttpd/certs -R
+	sudo chmod 0600 /etc/lighttpd/certs
+
+	# Configure lighttpd to use it
+	sudo echo '$SERVER["socket"] == ":443" {' >> /etc/lighttpd/lighttpd.conf
+	sudo echo '  ssl.engine = "enable"' >> /etc/lighttpd/lighttpd.conf
+	sudo echo '  ssl.pemfile = "/etc/lighttpd/certs/lighttpd.pem"' >> /etc/lighttpd/lighttpd.conf
+	sudo echo '}' >> /etc/lighttpd/lighttpd.conf
+	sudo service lighttpd restart
+fi
+#------------------------------------------------------------------------------
+
+
+#------------------------------------------------------------------------------
 # Allow webserver to manipulate services 
 #------------------------------------------------------------------------------
 #TODO: find a configuration that is more restrictive than ALL. `man sudo`
@@ -172,6 +193,7 @@ sudo curl --silent 127.0.0.1 > /dev/null
 ###############################################################################
 sudo apt-get install vsftpd db5.3-util -y
 
+# Self Signed Certificate for FTPS
 sudo openssl req -x509 -nodes -days 10000 -newkey rsa:1024 -keyout /etc/ssl/private/vsftpd.pem -out /etc/ssl/private/vsftpd.pem -subj "/C=US/ST=FTP Server/L=arkontrol/O=arkontrol/OU=arkontrol-ftp/CN=ssl.arkontrol.com"
 sudo mkdir /etc/vsftpd
 sudo touch /etc/vsftpd/virtual-users.txt
