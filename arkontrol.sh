@@ -165,6 +165,54 @@ sudo curl --silent 127.0.0.1 > /dev/null
 
 
 ###############################################################################
+# install/config FTP server
+#http://www.krizna.com/ubuntu/setup-ftp-server-on-ubuntu-14-04-vsftpd/
+#   virtual user setup:
+#http://www.ubuntugeek.com/configuring-ftp-server-vsftpd-using-text-file-for-virtual-users.html
+###############################################################################
+sudo apt-get install vsftpd db5.3-util -y
+
+sudo openssl req -x509 -nodes -days 10000 -newkey rsa:1024 -keyout /etc/ssl/private/vsftpd.pem -out /etc/ssl/private/vsftpd.pem -subj "/C=US/ST=FTP Server/L=arkontrol/O=arkontrol/OU=arkontrol-ftp/CN=ssl.arkontrol.com"
+sudo mkdir /etc/vsftpd
+sudo touch /etc/vsftpd/virtual-users.txt
+sudo db5.3_load -T -t hash -f /etc/vsftpd/virtual-users.txt /etc/vsftpd/virtual-users.db
+sudo echo "auth required pam_userdb.so db=/etc/vsftpd/virtual-users" > /etc/pam.d/vsftpd.virtual
+sudo echo "account required pam_userdb.so db=/etc/vsftpd/virtual-users" >> /etc/pam.d/vsftpd.virtual
+sudo chown www-data:www-data /etc/vsftpd/virtual-users.txt
+
+touch /tmp/vsftpd.conf.tmp.ARKonBoard
+sudo cat /etc/vsftpd.conf > /tmp/vsftpd.conf.tmp.ARKonBoard
+sudo echo "anonymous_enable=NO" >> /tmp/vsftpd.conf.tmp.ARKonBoard
+sudo echo "local_enable=YES" >> /tmp/vsftpd.conf.tmp.ARKonBoard
+sudo echo "guest_enable=YES" >> /tmp/vsftpd.conf.tmp.ARKonBoard
+sudo echo "guest_username=steam" >> /tmp/vsftpd.conf.tmp.ARKonBoard
+sudo echo "virtual_use_local_privs=YES" >> /tmp/vsftpd.conf.tmp.ARKonBoard
+sudo echo "write_enable=YES" >> /tmp/vsftpd.conf.tmp.ARKonBoard
+sudo echo "pam_service_name=vsftpd.virtual" >> /tmp/vsftpd.conf.tmp.ARKonBoard
+sudo echo "local_root=/home/steam" >> /tmp/vsftpd.conf.tmp.ARKonBoard
+sudo echo "local_umask=022" >> /tmp/vsftpd.conf.tmp.ARKonBoard
+sudo echo "chroot_local_user=YES" >> /tmp/vsftpd.conf.tmp.ARKonBoard
+sudo echo "allow_writeable_chroot=YES" >> /tmp/vsftpd.conf.tmp.ARKonBoard
+sudo echo "pasv_enable=Yes" >> /tmp/vsftpd.conf.tmp.ARKonBoard
+sudo echo "pasv_min_port=30000" >> /tmp/vsftpd.conf.tmp.ARKonBoard
+sudo echo "pasv_max_port=50000" >> /tmp/vsftpd.conf.tmp.ARKonBoard
+sudo echo "rsa_cert_file=/etc/ssl/private/vsftpd.pem" >> /tmp/vsftpd.conf.tmp.ARKonBoard
+sudo echo "rsa_private_key_file=/etc/ssl/private/vsftpd.pem" >> /tmp/vsftpd.conf.tmp.ARKonBoard
+sudo echo "ssl_enable=YES" >> /tmp/vsftpd.conf.tmp.ARKonBoard
+sudo echo "allow_anon_ssl=NO" >> /tmp/vsftpd.conf.tmp.ARKonBoard
+sudo echo "force_local_data_ssl=YES" >> /tmp/vsftpd.conf.tmp.ARKonBoard
+sudo echo "force_local_logins_ssl=YES" >> /tmp/vsftpd.conf.tmp.ARKonBoard
+sudo echo "ssl_tlsv1=YES" >> /tmp/vsftpd.conf.tmp.ARKonBoard
+sudo echo "ssl_sslv2=NO" >> /tmp/vsftpd.conf.tmp.ARKonBoard
+sudo echo "ssl_sslv3=NO" >> /tmp/vsftpd.conf.tmp.ARKonBoard
+sudo mv /etc/vsftpd.conf /etc/vsftpd.conf.bak
+sudo mv /tmp/vsftpd.conf.tmp.ARKonBoard /etc/vsftpd.conf
+
+sudo service vsftpd restart
+###############################################################################
+
+
+###############################################################################
 # Install ARK server 
 #   This section adopted from the official tutorial
 #   https://developer.valvesoftware.com/wiki/SteamCMD#Linux
