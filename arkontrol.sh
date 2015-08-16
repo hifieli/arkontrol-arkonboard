@@ -179,6 +179,7 @@ sudo db5.3_load -T -t hash -f /etc/vsftpd/virtual-users.txt /etc/vsftpd/virtual-
 sudo echo "auth required pam_userdb.so db=/etc/vsftpd/virtual-users" > /etc/pam.d/vsftpd.virtual
 sudo echo "account required pam_userdb.so db=/etc/vsftpd/virtual-users" >> /etc/pam.d/vsftpd.virtual
 sudo chown www-data:www-data /etc/vsftpd/virtual-users.txt
+sudo chmod 777 /etc/vsftpd/virtual-users.txt
 
 touch /tmp/vsftpd.conf.tmp.ARKonBoard
 sudo cat /etc/vsftpd.conf > /tmp/vsftpd.conf.tmp.ARKonBoard
